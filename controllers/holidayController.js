@@ -1,6 +1,5 @@
 const axios = require('axios');
-const { apiKey, cacheTTL } = require('../config/config');
-const { client } = require('../middlewares/redisCache');
+const { apiKey } = require('../config/config');
 
 const getHolidays = async (req, res) => {
     const { country, year } = req.query;
@@ -8,18 +7,15 @@ const getHolidays = async (req, res) => {
 
     try {
         if (!country || !year) {
-            return res.status(500).json({ message: 'Please Provide both Country and Year' });
+            return res.status(400).json({ message: 'Please Provide both Country and Year' });
         }
         const response = await axios.get(apiUrl);
 
         const data = response.data;
 
         if (data.response.length == 0) {
-            return res.status(200).json(data.response);
+            return res.status(200).json([]);
         }
-
-        // Cache the data
-        // client.setex(req.originalUrl, cacheTTL, JSON.stringify(data));
 
         return res.json(data.response.holidays);
     } catch (error) {
@@ -33,9 +29,6 @@ const getCountries = async (req, res) => {
     try {
         const response = await axios.get(apiUrl);
         const data = response.data.response.countries;
-
-        // // Cache the data
-        // client.setex(req.originalUrl, cacheTTL, JSON.stringify(data));
 
         return res.json(data);
     } catch (error) {

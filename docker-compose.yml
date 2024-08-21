@@ -5,17 +5,17 @@ services:
     image: "redis:latest"
     container_name: "my_redis"
     ports:
-      - "6379:6379"  # Expose Redis on default port
+      - "6379:6379"
 
   backend:
     build:
-      context: .  # Assuming your Dockerfile is in the current directory
-      dockerfile: Dockerfile  # Ensure you have a Dockerfile for the backend
+      context: .  
+      dockerfile: Dockerfile  
     container_name: "my_backend"
     ports:
-      - "5000:5000"  # Expose your backend API on port 5000
+      - "5000:5000"  
     environment:
-      - REDIS_HOST=redis  # Environment variable to connect to Redis
+      - REDIS_HOST=redis 
       - REDIS_PORT=6379
     depends_on:
-      - redis  # Ensure Redis starts before the backend
+      - redis  

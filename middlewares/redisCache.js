@@ -2,14 +2,13 @@ const redis = require('redis');
 const { redisHost, redisPort } = require('../config/config');
 
 const client = redis.createClient({
-    url: `redis://${redisHost}:${redisPort}`  // Use the correct URL format
+    url: `redis://${redisHost}:${redisPort}`
 });
 
 client.on('error', (err) => {
     console.error('Redis error:', err);
 });
 
-// Ensure the client connects properly before using it
 client.connect().catch(console.error);
 
 const cache = (req, res, next) => {
@@ -22,7 +21,7 @@ const cache = (req, res, next) => {
             } else {
                 res.sendResponse = res.send;
                 res.send = (body) => {
-                    client.setEx(key, 1800, JSON.stringify(body));  // Updated method name
+                    client.setEx(key, 1800, JSON.stringify(body));
                     res.sendResponse(body);
                 };
                 next();
